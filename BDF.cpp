@@ -28,6 +28,17 @@ void BDF::parse(std::string bdf_file)
         res_y = read_int();
     }
 
+    next_line();
+    if (read_string() == "FONTBOUNDINGBOX")
+    {
+        bounding_box_x = read_int();
+        bounding_box_y = read_int();
+        bounding_box_dis_x = read_int();
+        bounding_box_dis_y = read_int();
+    }
+
+    _parse_properties();
+
     _file.close();
 }
 
@@ -39,6 +50,11 @@ std::string BDF::version()
 std::string BDF::font_name()
 {
     return _font_name;
+}
+
+std::string BDF::get_property(std::string property_name)
+{
+    return _properties[property_name];
 }
 
 std::string BDF::read_string()
@@ -68,6 +84,32 @@ int BDF::read_int()
 {
     std::string value = read_string();
     return std::stoi(value);
+}
+
+void BDF::_parse_properties()
+{
+    next_line();
+    if (read_string() != "STARTPROPERTIES")
+    {
+        throw std::exception("Unexpected properties !");
+    }
+
+    int number_properties = read_int();
+
+    for (unsigned int i = 0; i < number_properties; i++)
+    {
+        next_line();
+        std::string propertie_name = read_string();
+        std::string propertie_value = read_string();
+
+        _properties[propertie_name] = propertie_value;
+    }
+
+    next_line();
+    if (read_string() != "ENDPROPERTIES")
+    {
+        throw std::exception("Missing end of properties !");
+    }
 }
 
 void BDF::next_line()

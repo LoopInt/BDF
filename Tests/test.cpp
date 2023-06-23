@@ -33,3 +33,16 @@ TEST_F(BDF_Tests, parse_size)
 	EXPECT_EQ(parser.res_x, 96);
 	EXPECT_EQ(parser.res_y, 96);
 }
+
+TEST_F(BDF_Tests, parse_bounding_box)
+{
+	EXPECT_EQ(parser.bounding_box_x, 8);
+	EXPECT_EQ(parser.bounding_box_y, 8);
+	EXPECT_EQ(parser.bounding_box_dis_x, 0);
+	EXPECT_EQ(parser.bounding_box_dis_y, -1);
+}
+
+TEST_F(BDF_Tests, parse_property)
+{
+	EXPECT_EQ(parser.get_property("PIXEL_SIZE"), "8");
+}
