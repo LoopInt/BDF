@@ -8,12 +8,16 @@ void BDF::parse(std::string bdf_file)
         throw std::exception("Cannot open the file !");
     }
 
-    std::string line;
-
-    std::getline(_file, line);
-    if (line.substr(0, 10) == "STARTFONT ")
+    next_line();
+    if (read_string() == "STARTFONT")
     {
-        _version = line.substr(10, line.size() - 10);
+        _version = read_string();
+    }
+
+    next_line();
+    if (read_string() == "FONT")
+    {
+        _font_name = read_string();
     }
 
     _file.close();
@@ -22,4 +26,38 @@ void BDF::parse(std::string bdf_file)
 std::string BDF::version()
 {
     return _version;
+}
+
+std::string BDF::font_name()
+{
+    return _font_name;
+}
+
+std::string BDF::read_string()
+{
+    std::string value;
+
+    while (*_it == ' ')
+    {
+        _it++;
+    }
+
+    if (_it == _current_line.end())
+    {
+        throw std::exception("No word to parse !");
+    }
+
+    while (_it != _current_line.end() && *_it != ' ')
+    {
+        value.push_back(*_it);
+        _it++;
+    }
+
+    return value;
+}
+
+void BDF::next_line()
+{
+    std::getline(_file, _current_line);
+    _it = _current_line.begin();
 }
