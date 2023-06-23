@@ -20,6 +20,14 @@ void BDF::parse(std::string bdf_file)
         _font_name = read_string();
     }
 
+    next_line();
+    if (read_string() == "SIZE")
+    {
+        point_size = read_int();
+        res_x = read_int();
+        res_y = read_int();
+    }
+
     _file.close();
 }
 
@@ -54,6 +62,12 @@ std::string BDF::read_string()
     }
 
     return value;
+}
+
+int BDF::read_int()
+{
+    std::string value = read_string();
+    return std::stoi(value);
 }
 
 void BDF::next_line()
